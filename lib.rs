@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use std::error::Error;
 use std::fmt::{self,Display};
+use std::fs::read_to_string;
 
 #[derive(Debug)] 
 pub struct ConfigPathError{
@@ -47,4 +48,18 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
         return Err(ConfigPathError{ cause: format!("unsupported platform: {}", std::env::consts::OS)})
     }
     Ok(PathBuf::from(&cfg_path))
+}
+
+pub fn read_config_root() -> Result<PathBuf, ConfigPathError> {
+    if let Ok(cgi_exe) = std::env::current_exe() {
+        if let Some(current_path) = cgi_exe.parent() {
+            let config_file = current_path.join(".config");
+            if let Ok(config_dir) = read_to_string(&config_file) {
+                return Ok(config_dir.trim().into())
+            } else {
+                return Err(ConfigPathError{ cause: format!("config root directory isn't set in {:?}", &config_file)})
+            }
+        }
+    }
+    Err(ConfigPathError{ cause: format!("can't get exe path or it's parent")})
 }
