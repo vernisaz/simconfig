@@ -1,4 +1,4 @@
-# build simple config crate
+# build the simple config crate
 crate  =simcfg
 crate main=lib
 dep_crates=[]
