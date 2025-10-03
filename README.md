@@ -1,14 +1,21 @@
 # Simple Config
 
 ## why
-When you write any application, usually you need to store its configuration somewhere.
-It's probably doesn't matter if your app for a personal use on one platform only.
+Using a stardard place for storing an app configuration helps to reduce a polution of 
+random directories over PC hard drive.
 
-However for applications with wide use on different platforms, this crate will help:
+Use the crate to get a configuration directory for your platform and then store the configuration there.
 
 ```rust
 let mut config_path = simcfg::get_config_root())).unwrap();
 config_path.push("my app name");
-// add config file name here
+// push a config file name here
 ....
 ```
+
+## build the crate
+
+Unless you plan to use the crate in sources, you can build it as a binary lib.
+Obtain [RustBee](https://github.com/vernisaz/rust_bee) unless  you already have it.
+
+Run **rb** in the root of the crate. The crate will be stored in the `crate_dir` directory.
