@@ -30,7 +30,11 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
     if cfg!(target_os = "macos") {
         match std::env::home_dir() {
             Some(path) => cfg_path = format!("{}/Library/Application Support", path.display()),
-            None => return Err(ConfigPathError{ cause: "no home dir set".to_string()}),
+            None => {
+                return Err(ConfigPathError {
+                    cause: "no home dir set".to_string(),
+                });
+            }
         }
     } else if cfg!(unix) {
         match std::env::var("HOME") {
@@ -38,7 +42,7 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
             Err(_) => {
                 return Err(ConfigPathError {
                     cause: "no HOME set".to_string(),
-                })
+                });
             }
         }
     } else if cfg!(windows) {
@@ -47,7 +51,7 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
             Err(_) => {
                 return Err(ConfigPathError {
                     cause: "no LOCALAPPDATA set".to_string(),
-                })
+                });
             }
         }
     } else {
@@ -59,14 +63,19 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
 }
 
 pub fn read_config_root() -> Result<PathBuf, ConfigPathError> {
-    if let Ok(cgi_exe) = std::env::current_exe() 
-        && let Some(current_path) = cgi_exe.parent() {
+    if let Ok(cgi_exe) = std::env::current_exe()
+        && let Some(current_path) = cgi_exe.parent()
+    {
         let config_file = current_path.join(".config");
         if let Ok(config_dir) = read_to_string(&config_file) {
-            return Ok(config_dir.trim().into())
+            return Ok(config_dir.trim().into());
         } else {
-            return Err(ConfigPathError{ cause: format!("config root directory isn't set in {:?}", &config_file)})
+            return Err(ConfigPathError {
+                cause: format!("config root directory isn't set in {:?}", &config_file),
+            });
         }
     }
-    Err(ConfigPathError{ cause: "can't get exe path or it's parent".to_string()})
+    Err(ConfigPathError {
+        cause: "can't get exe path or it's parent".to_string(),
+    })
 }
