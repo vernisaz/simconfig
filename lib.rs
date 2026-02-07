@@ -76,6 +76,6 @@ pub fn read_config_root() -> Result<PathBuf, ConfigPathError> {
         }
     }
     Err(ConfigPathError {
-        cause: "can't get exe path or it's parent".to_string(),
+        cause: "can't get exe path or its parent".to_string(),
     })
 }
