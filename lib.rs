@@ -1,7 +1,5 @@
-use std::error::Error;
-use std::fmt::{self, Display};
-use std::fs::read_to_string;
-use std::path::PathBuf;
+//! The crates gives a system dependent path to common configuration storage.
+use std::{error::Error, fmt::{self, Display}, fs::read_to_string, path::PathBuf};
 
 #[derive(Debug)]
 pub struct ConfigPathError {
@@ -25,6 +23,8 @@ impl Error for ConfigPathError {
     }
 }
 
+/// Returns a path to the configuration root directory.
+///
 pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
     let cfg_path;
     if cfg!(target_os = "macos") {
@@ -62,6 +62,11 @@ pub fn get_config_root() -> Result<PathBuf, ConfigPathError> {
     Ok(PathBuf::from(&cfg_path))
 }
 
+/// Reads file '.config' accompined the current executable and then gets
+/// a config root directory from it
+///
+/// Such approach is valuable when an application runs sandboxed, but
+/// still needs an access to a configuration.
 pub fn read_config_root() -> Result<PathBuf, ConfigPathError> {
     if let Ok(cgi_exe) = std::env::current_exe()
         && let Some(current_path) = cgi_exe.parent()
